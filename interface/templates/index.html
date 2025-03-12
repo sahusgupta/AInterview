@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RealTalk – Parallax Scrolling</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* 
+      We’ll define some extra custom classes 
+      for parallax and sticky behaviors.
+    */
+    .parallax-section {
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* 
+      For sections that become “sticky” at certain points. 
+      position: sticky alone might suffice for some simpler approaches,
+      but we may also coordinate with IntersectionObserver in JS.
+    */
+    .sticky-bg {
+      position: sticky;
+      top: 0;
+      z-index: -1; /* so content can scroll over it */
+      height: 100vh;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* 
+      Optional fade transitions or transformations 
+      as user scrolls from one section to next.
+    */
+    .fade-transition {
+      transition: opacity 0.7s ease-in-out;
+    }
+    .faded {
+      opacity: 0;
+    }
+
+  </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-900 overflow-x-hidden">
+
+  <!-- NAVBAR (Persistent, monotonic) -->
+  <header class="w-full bg-gray-900 text-white fixed top-0 left-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-xl font-bold tracking-wide text-blue-200 hover:text-blue-100 transition">
+        RealTalk
+      </div>
+      <nav class="space-x-6 text-gray-300">
+        <a href="#" class="hover:text-white transition">Home</a>
+        <a href="#" class="hover:text-white transition">Features</a>
+        <a href="#" class="hover:text-white transition">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- FIRST SECTION - Vibrant Hero with rolling scroll effect -->
+  <section class="relative h-screen w-full flex items-center justify-center pt-16" id="hero1">
+    <!-- Sticky background container -->
+    <div 
+      class="sticky-bg" 
+      style="background-image: url('https://images.unsplash.com/photo-1496483648148-47c686dc86a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');"
+    >
+    </div>
+
+    <!-- Foreground content -->
+    <div class="z-10 text-center max-w-2xl px-4">
+      <h1 class="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg">Discover RealTalk</h1>
+      <p class="mt-4 text-xl text-blue-100 drop-shadow">
+        AI Interview Analysis with a Vibrant Twist
+      </p>
+      <button class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-md shadow hover:bg-blue-700 transition">
+        Get Started
+      </button>
+    </div>
+  </section>
+
+  <!-- SECOND SECTION - Another parallax background that “catches” at the top -->
+  <section class="relative h-screen w-full flex items-center justify-center" id="hero2">
+    <!-- Sticky background container #2 -->
+    <div 
+      class="sticky-bg fade-transition" 
+      id="bg2"
+      style="background-image: url('https://images.unsplash.com/photo-1521295121783-8a321d551ad2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');"
+    >
+    </div>
+
+    <!-- Vibrant Foreground Content -->
+    <div class="z-10 text-center max-w-2xl px-4">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg">Pinpoint Accuracy</h2>
+      <p class="mt-4 text-lg text-blue-100 drop-shadow">
+        RealTalk’s multi-layer detection ensures you catch AI usage
+      </p>
+    </div>
+  </section>
+
+  <!-- THIRD SECTION: Normal (non-parallax) content, more color and user-friendly layout -->
+  <section class="bg-indigo-100 py-20 px-4">
+    <div class="max-w-5xl mx-auto text-center">
+      <h3 class="text-3xl font-bold text-indigo-900 mb-4">Why RealTalk?</h3>
+      <p class="text-indigo-800 leading-relaxed mb-6">
+        RealTalk leverages top-tier ML models to parse interview audio, providing an AI-likelihood score. 
+        Save time, cut stress, and preserve authenticity in the hiring process.
+      </p>
+      <!-- Some fancy cards for user-friendliness -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="bg-white rounded shadow p-6">
+          <h4 class="font-semibold text-gray-800 text-xl">Deep Analysis</h4>
+          <p class="text-gray-600 mt-2">MFCCs, spectral features, and more for advanced detection.</p>
+        </div>
+        <div class="bg-white rounded shadow p-6">
+          <h4 class="font-semibold text-gray-800 text-xl">Interactive UI</h4>
+          <p class="text-gray-600 mt-2">Vibrant, minimalist design ensures an intuitive experience.</p>
+        </div>
+        <div class="bg-white rounded shadow p-6">
+          <h4 class="font-semibold text-gray-800 text-xl">Trusted Results</h4>
+          <p class="text-gray-600 mt-2">Reliable ML scoring engine to gauge possible AI usage.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOURTH SECTION: Another parallax approach for the final block -->
+  <section class="relative h-screen w-full flex items-center justify-center" id="hero3">
+    <!-- Sticky background container #3 -->
+    <div 
+      class="sticky-bg fade-transition" 
+      id="bg3"
+      style="background-image: url('https://images.unsplash.com/photo-1612831455547-dd94f614d78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');"
+    >
+    </div>
+
+    <!-- Foreground content -->
+    <div class="z-10 text-center max-w-2xl px-4">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg">Protect Authenticity</h2>
+      <p class="mt-4 text-lg text-blue-100 drop-shadow">
+        Join the RealTalk revolution and keep your hiring process real.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer (Monotonic) -->
+  <footer class="bg-gray-900 text-white py-6">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+      <p class="mb-4 md:mb-0 text-sm text-gray-300">
+        © 2025 RealTalk. All Rights Reserved.
+      </p>
+      <div class="space-x-4">
+        <a href="#" class="text-gray-400 hover:text-gray-200">Privacy Policy</a>
+        <a href="#" class="text-gray-400 hover:text-gray-200">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Intersection Observer or Basic Scroll Logic for transitions -->
+  <script>
+    const fadeSections = [
+      { elementId: 'bg2', triggerId: 'hero2' },
+      { elementId: 'bg3', triggerId: 'hero3' },
+    ];
+
+    // Basic usage: We'll 'fade out' the background as soon as user scrolls away.
+    // For a multi-stage approach, consider using IntersectionObserver for advanced logic.
+    window.addEventListener('scroll', () => {
+      fadeSections.forEach(({elementId, triggerId}) => {
+        const elem = document.getElementById(elementId);
+        const rect = document.getElementById(triggerId).getBoundingClientRect();
+        // if the user is well past the section, fade out
+        if (rect.top < -300) {
+          elem.classList.add('faded');
+        } else {
+          elem.classList.remove('faded');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
