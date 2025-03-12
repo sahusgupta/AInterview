@@ -1,0 +1,29 @@
+audio:
+  input_dir: "./data/input_audio"  # Directory for input audio files
+  output_dir: "./data/preprocessed_audio"  # Directory to store preprocessed audio
+  sample_rate: 16000  # Desired sample rate for the audio
+  duration_threshold: 5  # Minimum duration (in seconds) to process audio files
+
+preprocessing:
+  noise_reduction: true  # Enable or disable noise reduction
+  vad: true  # Enable or disable Voice Activity Detection
+  mfcc:
+    n_mfcc: 13  # Number of MFCC features to extract
+    hop_length: 512  # Hop length for MFCC feature extraction
+
+transcription:
+  api: "whisper"  # Speech-to-text service (can be "whisper" or "google")
+  model: "base"   # Model variant for transcription
+  api_key: "YOUR_API_KEY"  # API key for transcription service (if required)
+
+nlp:
+  model: "en_core_web_sm"  # spaCy model or alternative NLP model to use
+
+detection:
+  weight_audio: 0.6  # Weight of the audio score in the final AI likelihood
+  weight_text: 0.4  # Weight of the text score in the final AI likelihood
+  threshold: 0.5  # AI likelihood threshold to classify as "AI-assisted"
+
+interface:
+  type: "streamlit"  # Interface type: "streamlit" or "flask"
+  port: 8501  # Port number for the web interface

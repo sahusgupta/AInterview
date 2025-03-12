@@ -1,0 +1,12 @@
+librosa
+noisereduce
+numpy
+pyyaml
+pydub
+spacy
+transformers
+openai-whisper
+flask
+streamlit
+scikit-learn
+pytest
