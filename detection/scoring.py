@@ -1,5 +1,12 @@
 import numpy as np
-
+import pandas as pd
+import requests
+from sklearn.preprocessing import StandardScaler
+from scipy.stats import beta
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
 def compute_likelihood(transcript: str, audio_features : dict):
     suspicious_keywords = ["furthermore", "indeed", "hello, my name is AI"]
     text_score = sum(transcript.lower().count(k) for k in suspicious_keywords)
