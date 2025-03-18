@@ -32,7 +32,7 @@
                                 <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </span>
-                        Upload and Analyze
+                        Upload
                     </button>
                 </div>
             </form>
@@ -60,17 +60,31 @@
                                 <div>
                                     <h3 class="text-xl font-semibold text-gray-900">{{ recording.filename }}</h3>
                                     <p class="text-gray-600 mt-2">{{ recording.transcript }}</p>
+                                    <audio controls class="mt-3 w-full">
+                                        <source src="{{ recording.path }}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-2xl font-bold text-gray-900">{{ "%.1f"|format(recording.ai_score * 100) }}%</div>
-                                    <div class="text-sm text-gray-500">AI Likelihood</div>
+                                    {% if recording.analyzed %}
+                                        <div class="text-2xl font-bold text-gray-900">{{ "%.1f"|format(recording.ai_score * 100) }}%</div>
+                                        <div class="text-sm text-gray-500">AI Likelihood</div>
+                                    {% else %}
+                                        <form method="POST" action="{{ url_for('analyze_recording', recording_id=recording.id) }}">
+                                            <button type="submit" class="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300">
+                                                Analyze
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
+                            {% if recording.analyzed %}
                             <div class="mt-4">
                                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                                     <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ recording.ai_score * 100 }}%"></div>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>

@@ -105,27 +105,60 @@ def upload():
     file.save(local_path)
 
     try:
+        # Add the recording to user's list without processing
+        user_data = users[get_current_user()]
+        recording_id = len(user_data["recordings"])
+        user_data["recordings"].append({
+            "id": recording_id,
+            "filename": filename,
+            "path": local_path,
+            "transcript": "Not analyzed yet",
+            "ai_score": None,
+            "analyzed": False
+        })
+        flash("File uploaded successfully! Click 'Analyze' to process it.", "success")
+    except Exception as e:
+        flash(f"Error uploading file: {e}", "error")
+
+    return redirect(url_for("dashboard"))
+
+@app.route("/analyze/<int:recording_id>", methods=["POST"])
+def analyze_recording(recording_id):
+    if not is_logged_in():
+        flash("Please log in first.", "error")
+        return redirect(url_for("login"))
+    
+    user_data = users[get_current_user()]
+    
+    # Check if recording exists
+    if recording_id >= len(user_data["recordings"]):
+        flash("Recording not found!", "error")
+        return redirect(url_for("dashboard"))
+    
+    recording = user_data["recordings"][recording_id]
+    local_path = recording["path"]
+    
+    try:
+        # Process the audio through our AI pipeline
         y, sr = load_and_preprocess(local_path)
         y_vad = apply_vad(y)
         feats = extract_features(y_vad, sr)
-
+        
+        # Transcribe the audio
         transcript = attempt_transcribe(local_path, app.config["GLADIA_API_KEY"])
+        
+        # Compute AI likelihood score
         ai_score = compute_likelihood(transcript, feats)
-
-        # For this example, let's pretend:
-        transcript = "Hello world. This is a placeholder transcript."
-        ai_score = 0.42
-
-        user_data = users[get_current_user()]
-        user_data["recordings"].append({
-            "filename": filename,
-            "transcript": transcript,
-            "score": ai_score
-        })
-        flash("File processed successfully!", "success")
+        
+        # Update the recording with analysis results
+        recording["transcript"] = transcript
+        recording["ai_score"] = ai_score
+        recording["analyzed"] = True
+        
+        flash("Recording analyzed successfully!", "success")
     except Exception as e:
-        flash(f"Error processing file: {e}", "error")
-
+        flash(f"Error analyzing recording: {e}", "error")
+    
     return redirect(url_for("dashboard"))
 
 if __name__ == "__main__":
