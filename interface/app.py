@@ -19,7 +19,7 @@ users = {}
 # Utility & Auth Functions
 ##############################################
 def is_logged_in():
-    return "username" in session
+    return session.get("username", False)
 
 def get_current_user():
     return session.get("username")
@@ -33,8 +33,7 @@ app.config["GLADIA_API_KEY"] = os.getenv("GLADIA_API_KEY", "")
 @app.route("/")
 def landing():
     # If user is logged in, skip to dashboard
-    if is_logged_in():
-        return redirect(url_for("dashboard"))
+
     return render_template("index.html")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -45,9 +44,9 @@ def register():
 
         if not username or not password:
             flash("Please fill out all fields.", "error")
-            return redirect(url_for("register"))
+            return redirect(url_for("register"))    
         
-        if username in users:
+        if users.get(username, False):
             flash("Username already taken!", "error")
             return redirect(url_for("register"))
 
@@ -76,8 +75,9 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
+    users.clear()
     flash("Logged out!", "info")
-    return redirect(url_for("index"))
+    return redirect("/")
 
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
@@ -85,7 +85,7 @@ def dashboard():
         flash("Please log in.", "error")
         return redirect(url_for("login"))
     
-    user_data = users[get_current_user()]
+    user_data = users.get(get_current_user(), "")
     return render_template("dashboard.html", recordings=user_data["recordings"])
 
 @app.route("/upload", methods=["POST"])
@@ -106,7 +106,7 @@ def upload():
 
     try:
         # Add the recording to user's list without processing
-        user_data = users[get_current_user()]
+        user_data = users.get(get_current_user(), "")
         recording_id = len(user_data["recordings"])
         user_data["recordings"].append({
             "id": recording_id,
@@ -128,7 +128,7 @@ def analyze_recording(recording_id):
         flash("Please log in first.", "error")
         return redirect(url_for("login"))
     
-    user_data = users[get_current_user()]
+    user_data = users.get(get_current_user(), "")
     
     # Check if recording exists
     if recording_id >= len(user_data["recordings"]):
