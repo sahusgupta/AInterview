@@ -1,186 +1,493 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RealTalk – Parallax Scrolling</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+{% extends "base.html" %}
 
-  <style>
-    /* 
-      We’ll define some extra custom classes 
-      for parallax and sticky behaviors.
-    */
-    .parallax-section {
-      background-attachment: fixed;
-      background-size: cover;
-      background-position: center;
-    }
+{% block title %}RealTalk - AI Interview Analysis{% endblock %}
 
-    /* 
-      For sections that become “sticky” at certain points. 
-      position: sticky alone might suffice for some simpler approaches,
-      but we may also coordinate with IntersectionObserver in JS.
-    */
-    .sticky-bg {
-      position: sticky;
-      top: 0;
-      z-index: -1; /* so content can scroll over it */
-      height: 100vh;
-      width: 100%;
-      background-size: cover;
-      background-position: center;
-    }
-
-    /* 
-      Optional fade transitions or transformations 
-      as user scrolls from one section to next.
-    */
-    .fade-transition {
-      transition: opacity 0.7s ease-in-out;
-    }
-    .faded {
-      opacity: 0;
-    }
-
-  </style>
-</head>
-<body class="bg-gray-50 font-sans text-gray-900 overflow-x-hidden">
-
-  <!-- NAVBAR (Persistent, monotonic) -->
-  <header class="w-full bg-gray-900 text-white fixed top-0 left-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="text-xl font-bold tracking-wide text-blue-200 hover:text-blue-100 transition">
-        RealTalk
-      </div>
-      <nav class="space-x-6 text-gray-300">
-        <a href="#" class="hover:text-white transition">Home</a>
-        <a href="#" class="hover:text-white transition">Features</a>
-        <a href="#" class="hover:text-white transition">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- FIRST SECTION - Vibrant Hero with rolling scroll effect -->
-  <section class="relative h-screen w-full flex items-center justify-center pt-16" id="hero1">
-    <!-- Sticky background container -->
-    <div 
-      class="sticky-bg" 
-      style="background-image: url('https://images.unsplash.com/photo-1496483648148-47c686dc86a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');"
-    >
-    </div>
-
-    <!-- Foreground content -->
-    <div class="z-10 text-center max-w-2xl px-4">
-      <h1 class="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg">Discover RealTalk</h1>
-      <p class="mt-4 text-xl text-blue-100 drop-shadow">
-        AI Interview Analysis with a Vibrant Twist
-      </p>
-      <button class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-md shadow hover:bg-blue-700 transition">
-        Get Started
-      </button>
-    </div>
-  </section>
-
-  <!-- SECOND SECTION - Another parallax background that “catches” at the top -->
-  <section class="relative h-screen w-full flex items-center justify-center" id="hero2">
-    <!-- Sticky background container #2 -->
-    <div 
-      class="sticky-bg fade-transition" 
-      id="bg2"
-      style="background-image: url('https://images.unsplash.com/photo-1521295121783-8a321d551ad2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');"
-    >
-    </div>
-
-    <!-- Vibrant Foreground Content -->
-    <div class="z-10 text-center max-w-2xl px-4">
-      <h2 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg">Pinpoint Accuracy</h2>
-      <p class="mt-4 text-lg text-blue-100 drop-shadow">
-        RealTalk’s multi-layer detection ensures you catch AI usage
-      </p>
-    </div>
-  </section>
-
-  <!-- THIRD SECTION: Normal (non-parallax) content, more color and user-friendly layout -->
-  <section class="bg-indigo-100 py-20 px-4">
-    <div class="max-w-5xl mx-auto text-center">
-      <h3 class="text-3xl font-bold text-indigo-900 mb-4">Why RealTalk?</h3>
-      <p class="text-indigo-800 leading-relaxed mb-6">
-        RealTalk leverages top-tier ML models to parse interview audio, providing an AI-likelihood score. 
-        Save time, cut stress, and preserve authenticity in the hiring process.
-      </p>
-      <!-- Some fancy cards for user-friendliness -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div class="bg-white rounded shadow p-6">
-          <h4 class="font-semibold text-gray-800 text-xl">Deep Analysis</h4>
-          <p class="text-gray-600 mt-2">MFCCs, spectral features, and more for advanced detection.</p>
+{% block content %}
+<div class="relative">
+    <!-- Hero Section with Sticky Background -->
+    <div class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 transform -skew-y-6 origin-top-right"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 transform skew-y-6 origin-bottom-left"></div>
+        <div class="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
+                <span class="block">Hire a person,</span>
+                <span class="block text-blue-600">not their AI</span>
+            </h1>
+            <p class="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                Ensure you're hiring authentic candidates by analyzing interview recordings for AI assistance.
+            </p>
+            <div class="flex justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+                <a href="{{ url_for('register') }}" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors duration-300">
+                    Get Started
+                </a>
+                <a href="{{ url_for('login') }}" class="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors duration-300 border border-blue-200">
+                    Sign In
+                </a>
+            </div>
         </div>
-        <div class="bg-white rounded shadow p-6">
-          <h4 class="font-semibold text-gray-800 text-xl">Interactive UI</h4>
-          <p class="text-gray-600 mt-2">Vibrant, minimalist design ensures an intuitive experience.</p>
+    </div>
+
+    <!-- Features Section with Sticky Scroll -->
+    <div class="relative">
+        <div class="sticky top-16 h-screen flex items-center justify-center bg-gradient-to-br from-white to-blue-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="lg:text-center">
+                    <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Features</h2>
+                    <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        Advanced AI Detection Technology
+                    </p>
+                    <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                        Our platform helps companies identify authentic candidates by detecting AI assistance in interview recordings.
+                    </p>
+                </div>
+
+                <div class="mt-10">
+                    <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+                        <!-- Feature 1 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg" data-aos="fade-up">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">AI Detection</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Advanced algorithms to identify AI-generated responses in interview recordings.
+                                </p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-500">
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Speech pattern analysis
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Natural language processing
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Response consistency checking
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Real-time Analysis</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Get instant results with detailed confidence scores for AI detection.
+                                </p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-500">
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Instant processing
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Confidence scoring
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Batch processing support
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Secure & Private</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Enterprise-grade security to protect sensitive interview recordings and analysis.
+                                </p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-500">
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        End-to-end encryption
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        GDPR compliance
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Secure data storage
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Feature 4 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Detailed Reports</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Comprehensive analysis reports highlighting potential AI usage in responses.
+                                </p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-500">
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Timestamp-based analysis
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Custom report templates
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="h-4 w-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Export in multiple formats
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="bg-white rounded shadow p-6">
-          <h4 class="font-semibold text-gray-800 text-xl">Trusted Results</h4>
-          <p class="text-gray-600 mt-2">Reliable ML scoring engine to gauge possible AI usage.</p>
+    </div>
+
+    <!-- How It Works Section with Sticky Scroll -->
+    <div class="relative">
+        <div class="sticky top-16 h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="lg:text-center">
+                    <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">How It Works</h2>
+                    <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        Simple 3-Step Process
+                    </p>
+                </div>
+
+                <div class="mt-10">
+                    <div class="space-y-10">
+                        <!-- Step 1 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg max-w-2xl mx-auto" data-aos="fade-up">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <span class="text-xl font-bold">1</span>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Upload Recording</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Upload your interview recording for analysis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <span class="text-xl font-bold">2</span>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">AI Analysis</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Our AI analyzes the recording for potential AI assistance.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                            <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                                <span class="text-xl font-bold">3</span>
+                            </div>
+                            <div class="ml-16">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Get Results</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Receive detailed analysis and confidence scores.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOURTH SECTION: Another parallax approach for the final block -->
-  <section class="relative h-screen w-full flex items-center justify-center" id="hero3">
-    <!-- Sticky background container #3 -->
-    <div 
-      class="sticky-bg fade-transition" 
-      id="bg3"
-      style="background-image: url('https://images.unsplash.com/photo-1612831455547-dd94f614d78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');"
-    >
     </div>
 
-    <!-- Foreground content -->
-    <div class="z-10 text-center max-w-2xl px-4">
-      <h2 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg">Protect Authenticity</h2>
-      <p class="mt-4 text-lg text-blue-100 drop-shadow">
-        Join the RealTalk revolution and keep your hiring process real.
-      </p>
+    <!-- Pricing Section with Sticky Scroll -->
+    <div class="relative">
+        <div class="sticky top-16 h-screen flex items-center justify-center bg-gradient-to-br from-white to-blue-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="lg:text-center">
+                    <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Pricing</h2>
+                    <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        Flexible, Pay-as-you-go Pricing
+                    </p>
+                    <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                        Choose your billing period and pay only for what you use
+                    </p>
+                </div>
+
+                <!-- Billing Period Toggle -->
+                <div class="mt-8 flex justify-center">
+                    <div class="relative self-center bg-gray-100 rounded-lg p-0.5 flex sm:mt-8">
+                        <button type="button" id="monthlyToggle" class="relative w-1/2 rounded-md py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:z-10 sm:w-auto sm:px-8 bg-white text-gray-900 shadow-sm">
+                            Monthly
+                        </button>
+                        <button type="button" id="annualToggle" class="ml-0.5 relative w-1/2 rounded-md py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:z-10 sm:w-auto sm:px-8 text-gray-700 hover:text-gray-900">
+                            Annual
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-10">
+                    <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10">
+                        <!-- Starter Plan -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg" data-aos="fade-up">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Starter</h3>
+                            <p class="mt-4 text-3xl font-extrabold text-gray-900">$0</p>
+                            <p class="mt-1 text-sm text-gray-500">Perfect for small teams</p>
+                            <ul class="mt-6 space-y-4">
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Up to 50 recordings per month</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Basic AI detection</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Standard processing time</p>
+                                </li>
+                            </ul>
+                            <a href="{{ url_for('register') }}" class="mt-8 block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300">
+                                Get Started
+                            </a>
+                        </div>
+
+                        <!-- Professional Plan -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg border-2 border-blue-500" data-aos="fade-up" data-aos-delay="100">
+                            <div class="absolute top-0 right-0 -mt-4 -mr-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500 text-white">
+                                    Popular
+                                </span>
+                            </div>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Professional</h3>
+                            <p class="mt-4 text-3xl font-extrabold text-gray-900">
+                                <span id="proPrice">$0.99</span>
+                                <span id="proAnnualPrice" class="hidden">$0.79</span>
+                            </p>
+                            <p class="mt-1 text-sm text-gray-500">
+                                <span id="proBillingText">Per recording, billed monthly</span>
+                                <span id="proAnnualBillingText" class="hidden">Per recording, billed annually (20% off)</span>
+                            </p>
+                            <ul class="mt-6 space-y-4">
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Unlimited recordings</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Advanced AI detection</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Priority processing</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Detailed analysis reports</p>
+                                </li>
+                            </ul>
+                            <a href="{{ url_for('register') }}" class="mt-8 block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300">
+                                Get Started
+                            </a>
+                        </div>
+
+                        <!-- Enterprise Plan -->
+                        <div class="relative glass p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Enterprise</h3>
+                            <p class="mt-4 text-3xl font-extrabold text-gray-900">Custom</p>
+                            <p class="mt-1 text-sm text-gray-500">For large organizations</p>
+                            <ul class="mt-6 space-y-4">
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Volume-based pricing</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Custom AI detection models</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">Dedicated support</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-3 text-sm text-gray-500">API access & integration</p>
+                                </li>
+                            </ul>
+                            <a href="#" class="mt-8 block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300">
+                                Contact Sales
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Pricing Information -->
+                <div class="mt-12 text-center">
+                    <p class="text-base text-gray-500">
+                        All plans include secure storage, basic support, and standard features.
+                    </p>
+                    <p class="mt-2 text-sm text-gray-500">
+                        Annual billing offers a 20% discount on all plans. Contact us for custom enterprise pricing.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- Footer (Monotonic) -->
-  <footer class="bg-gray-900 text-white py-6">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-      <p class="mb-4 md:mb-0 text-sm text-gray-300">
-        © 2025 RealTalk. All Rights Reserved.
-      </p>
-      <div class="space-x-4">
-        <a href="#" class="text-gray-400 hover:text-gray-200">Privacy Policy</a>
-        <a href="#" class="text-gray-400 hover:text-gray-200">Terms of Service</a>
-      </div>
+    <!-- CTA Section -->
+    <div class="relative bg-gradient-to-br from-blue-600 to-indigo-600 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Ready to Hire Real People?
+                </h2>
+                <p class="mt-4 text-lg text-blue-100">
+                    Start using RealTalk today and make confident hiring decisions.
+                </p>
+                <div class="mt-8">
+                    <a href="{{ url_for('register') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 transition-colors duration-300">
+                        Get Started
+                        <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-white text-sm">
+                <p>&copy; 2025 RealTalk. All rights reserved.</p>
+            </div>
+        </div>
     </div>
-  </footer>
+</div>
 
-  <!-- Intersection Observer or Basic Scroll Logic for transitions -->
-  <script>
-    const fadeSections = [
-      { elementId: 'bg2', triggerId: 'hero2' },
-      { elementId: 'bg3', triggerId: 'hero3' },
-    ];
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const monthlyToggle = document.getElementById('monthlyToggle');
+    const annualToggle = document.getElementById('annualToggle');
+    const proPrice = document.getElementById('proPrice');
+    const proAnnualPrice = document.getElementById('proAnnualPrice');
+    const proBillingText = document.getElementById('proBillingText');
+    const proAnnualBillingText = document.getElementById('proAnnualBillingText');
 
-    // Basic usage: We'll 'fade out' the background as soon as user scrolls away.
-    // For a multi-stage approach, consider using IntersectionObserver for advanced logic.
-    window.addEventListener('scroll', () => {
-      fadeSections.forEach(({elementId, triggerId}) => {
-        const elem = document.getElementById(elementId);
-        const rect = document.getElementById(triggerId).getBoundingClientRect();
-        // if the user is well past the section, fade out
-        if (rect.top < -300) {
-          elem.classList.add('faded');
+    function updatePricing(isAnnual) {
+        if (isAnnual) {
+            monthlyToggle.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+            monthlyToggle.classList.add('text-gray-700', 'hover:text-gray-900');
+            annualToggle.classList.remove('text-gray-700', 'hover:text-gray-900');
+            annualToggle.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+            
+            proPrice.classList.add('hidden');
+            proAnnualPrice.classList.remove('hidden');
+            proBillingText.classList.add('hidden');
+            proAnnualBillingText.classList.remove('hidden');
         } else {
-          elem.classList.remove('faded');
+            monthlyToggle.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+            monthlyToggle.classList.remove('text-gray-700', 'hover:text-gray-900');
+            annualToggle.classList.add('text-gray-700', 'hover:text-gray-900');
+            annualToggle.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+            
+            proPrice.classList.remove('hidden');
+            proAnnualPrice.classList.add('hidden');
+            proBillingText.classList.remove('hidden');
+            proAnnualBillingText.classList.add('hidden');
         }
-      });
-    });
-  </script>
-</body>
-</html>
+    }
+
+    monthlyToggle.addEventListener('click', () => updatePricing(false));
+    annualToggle.addEventListener('click', () => updatePricing(true));
+});
+</script>
+{% endblock %}
+{% endblock %}

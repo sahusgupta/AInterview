@@ -1,0 +1,351 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}RealTalk{% endblock %}</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+  <style>
+    /* Common animations and transitions */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .slide-up {
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Smooth transitions */
+    .transition-all {
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Hover effects */
+    .hover-lift {
+      transition: transform 0.3s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Glassmorphism effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(45deg, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Fix for full height content */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .alert-success {
+      background-color: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #34D399;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #F87171;
+    }
+
+    /* Enhanced navbar styles */
+    .navbar-glass {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar-glass.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-link {
+      position: relative;
+      color: #4B5563;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #3B82F6;
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #3B82F6;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active {
+      color: #3B82F6;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .logo-text {
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .register-btn {
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .register-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+    }
+
+    .mobile-menu {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-menu-link {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu-link:hover {
+      background: rgba(59, 130, 246, 0.05);
+      color: #3B82F6;
+    }
+
+    .mobile-menu-link.active {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3B82F6;
+    }
+
+    .parallax {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .sticky-bg {
+      position: sticky;
+      top: 0;
+      z-index: -1;
+    }
+
+    .hover-scale {
+      transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+      transform: scale(1.05);
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 navbar-glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <div class="flex-shrink-0 flex items-center">
+            <a href="/" class="text-2xl logo-text">RealTalk</a>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a href="/" class="nav-link {% if request.endpoint == 'index' %}active{% endif %} inline-flex items-center px-1 pt-1 text-sm font-medium">
+              Home
+            </a>
+            {% if session.get('username') %}
+              <a href="/dashboard" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %} inline-flex items-center px-1 pt-1 text-sm font-medium">
+                Dashboard
+              </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="flex items-center">
+          {% if session.get('username') %}
+            <a href="/logout" class="nav-link px-3 py-2 rounded-md text-sm font-medium">
+              Logout
+            </a>
+          {% else %}
+            <a href="/login" class="nav-link px-3 py-2 rounded-md text-sm font-medium">
+              Login
+            </a>
+            <a href="/register" class="ml-4 register-btn px-4 py-2 rounded-md text-sm font-medium text-white">
+              Register
+            </a>
+          {% endif %}
+        </div>
+        <div class="flex items-center sm:hidden">
+          <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors duration-200" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="sm:hidden hidden mobile-menu" id="mobile-menu">
+      <div class="pt-2 pb-3 space-y-1">
+        <a href="/" class="mobile-menu-link {% if request.endpoint == 'index' %}active{% endif %} block pl-3 pr-4 py-2 text-base font-medium">
+          Home
+        </a>
+        {% if session.get('username') %}
+          <a href="/dashboard" class="mobile-menu-link {% if request.endpoint == 'dashboard' %}active{% endif %} block pl-3 pr-4 py-2 text-base font-medium">
+            Dashboard
+          </a>
+          <a href="/logout" class="mobile-menu-link block pl-3 pr-4 py-2 text-base font-medium">
+            Logout
+          </a>
+        {% else %}
+          <a href="/login" class="mobile-menu-link {% if request.endpoint == 'login' %}active{% endif %} block pl-3 pr-4 py-2 text-base font-medium">
+            Login
+          </a>
+          <a href="/register" class="mobile-menu-link {% if request.endpoint == 'register' %}active{% endif %} block pl-3 pr-4 py-2 text-base font-medium">
+            Register
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Main content -->
+  <main class="pt-16">
+      {% block content %}{% endblock %}
+  </main>
+
+  <!-- Initialize AOS -->
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100
+    });
+
+    // Enhanced navbar scroll effect
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('nav');
+      const currentScroll = window.pageYOffset;
+
+      if (currentScroll <= 0) {
+        navbar.classList.remove('scrolled');
+      } else {
+        navbar.classList.add('scrolled');
+      }
+
+      lastScroll = currentScroll;
+    });
+
+    // Mobile menu toggle with animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.querySelector('.mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuIcon = mobileMenuButton.querySelector('.block');
+      const closeIcon = mobileMenuButton.querySelector('.hidden');
+      
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        menuIcon.classList.toggle('block');
+        menuIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('block');
+        closeIcon.classList.toggle('hidden');
+        const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+        mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+      });
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

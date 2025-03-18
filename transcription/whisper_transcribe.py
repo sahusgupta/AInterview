@@ -1,7 +1,7 @@
 import time
 import requests
 import json
-
+import numpy as np
 def upload(path, api_key):
     url = "https://api.gladia.io/v2/upload"
     headers = {
@@ -81,8 +81,10 @@ def attempt_transcribe(path, api_key):
         final_data = poll_for_result(transcription_id, api_key)
         # final_data should contain the completed transcription.
         # Typically final_data["transcription"] or final_data["prediction"] etc.
-        transcript = final_data.get("prediction", "")
+        transcript = final_data["prediction"]
         print("Transcription complete!\n")
         print("Transcript:\n", transcript)
+        return transcript
     except Exception as e:
         print("Transcription failed:", e)
+        return e
