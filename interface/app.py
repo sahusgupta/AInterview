@@ -32,7 +32,6 @@ app.config["GLADIA_API_KEY"] = os.getenv("GLADIA_API_KEY", "")
 
 @app.route("/")
 def landing():
-    # If user is logged in, skip to dashboard
 
     return render_template("index.html")
 
