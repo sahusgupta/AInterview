@@ -1,6 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.utils import secure_filename
+from moviepy import VideoFileClip
+import tempfile
 
 from preprocessing.preprocess_audio import load_and_preprocess
 from preprocessing.vad import apply_vad
@@ -11,6 +13,11 @@ from detection.scoring import compute_likelihood
 app = Flask(__name__)
 app.secret_key = "SOME_SUPER_SECRET_KEY"
 app.config["UPLOAD_FOLDER"] = "uploads"
+# Set maximum file size to 500MB to accommodate 45-min videos
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  
+
+# Allowed file extensions
+ALLOWED_EXTENSIONS = {'mp4', 'wav', 'mp3'}
 
 # In-memory user store: {username: {"password": ..., "recordings": [...]}}
 users = {}
@@ -87,6 +94,31 @@ def dashboard():
     user_data = users.get(get_current_user(), "")
     return render_template("dashboard.html", recordings=user_data["recordings"])
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def extract_audio_from_video(video_path):
+    """Extract audio from video file and save as WAV"""
+    try:
+        # Create a temporary directory for processing
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Load video
+            video = VideoFileClip(video_path)
+            
+            # Generate output audio path
+            audio_filename = os.path.splitext(os.path.basename(video_path))[0] + '.wav'
+            audio_path = os.path.join(app.config["UPLOAD_FOLDER"], audio_filename)
+            
+            # Extract audio and save as WAV
+            video.audio.write_audiofile(audio_path)
+            
+            # Close video to free up resources
+            video.close()
+            
+            return audio_path
+    except Exception as e:
+        raise Exception(f"Error extracting audio: {str(e)}")
+
 @app.route("/upload", methods=["POST"])
 def upload():
     if not is_logged_in():
@@ -98,13 +130,29 @@ def upload():
         flash("No file selected!", "error")
         return redirect(url_for("dashboard"))
 
-    filename = secure_filename(file.filename)
-    local_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-    file.save(local_path)
+    if not allowed_file(file.filename):
+        flash("Invalid file type! Please upload MP4, WAV, or MP3 files.", "error")
+        return redirect(url_for("dashboard"))
 
     try:
-        # Add the recording to user's list without processing
+        filename = secure_filename(file.filename)
+        local_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+        file.save(local_path)
+
+        # If file is MP4, extract audio
+        if filename.lower().endswith('.mp4'):
+            try:
+                audio_path = extract_audio_from_video(local_path)
+                # Remove original video file to save space
+                os.remove(local_path)
+                local_path = audio_path
+                filename = os.path.basename(audio_path)
+            except Exception as e:
+                flash(f"Error processing video: {str(e)}", "error")
+                return redirect(url_for("dashboard"))
+
+        # Add the recording to user's list
         user_data = users.get(get_current_user(), "")
         recording_id = len(user_data["recordings"])
         user_data["recordings"].append({
@@ -117,7 +165,7 @@ def upload():
         })
         flash("File uploaded successfully! Click 'Analyze' to process it.", "success")
     except Exception as e:
-        flash(f"Error uploading file: {e}", "error")
+        flash(f"Error uploading file: {str(e)}", "error")
 
     return redirect(url_for("dashboard"))
 
