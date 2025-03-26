@@ -2,6 +2,7 @@ import time
 import requests
 import json
 import numpy as np
+
 def upload(path, api_key):
     url = "https://api.gladia.io/v2/upload"
     headers = {
@@ -14,27 +15,30 @@ def upload(path, api_key):
         data = dict(response.json())
         return data.get("audio_url", "No audio url found")
     
-def request_transcript(url: str, api_key: str, diarization: bool = False, translation: bool = False):
-    
-    url = "https://api.gladia.io/v2/pre-recorded"
+def request_transcript(audio_url: str, api_key: str, diarization: bool = False, translation: bool = False):
+    # Use the fixed endpoint
+    endpoint_url = "https://api.gladia.io/v2/pre-recorded"
     headers = {
         "Content-Type": "application/json",
         "x-gladia-key": api_key
     }
     
     payload = {
-        "audio_url": url,
+        "audio_url": audio_url,  # Use the passed audio_url here
         "diarization": diarization,
         "translation": translation
     }
     
-    res = requests.post(url, headers=headers, json=payload)
+    res = requests.post(endpoint_url, headers=headers, json=payload)
     res.raise_for_status()
     return res.json()
 
 
-def poll_for_result(transcript_id, api_key, interval, max_attempts):
-    
+def poll_for_result(transcript_id, api_key, interval=5, max_attempts=60):
+    """
+    Poll for transcription results with default interval of 5 seconds
+    and max attempts of 60 (5 minutes total waiting time)
+    """
     for _ in range(max_attempts):
         url = f"https://api.gladia.io/v2/pre-recorded/{transcript_id}"
         headers = {
@@ -80,11 +84,10 @@ def attempt_transcribe(path, api_key):
     try:
         final_data = poll_for_result(transcription_id, api_key)
         # final_data should contain the completed transcription.
-        # Typically final_data["transcription"] or final_data["prediction"] etc.
-        transcript = final_data["prediction"]
+        transcript = final_data.get("prediction", "")
         print("Transcription complete!\n")
         print("Transcript:\n", transcript)
         return transcript
     except Exception as e:
         print("Transcription failed:", e)
-        return e
+        return str(e)
